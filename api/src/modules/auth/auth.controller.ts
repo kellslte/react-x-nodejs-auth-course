@@ -15,6 +15,7 @@ import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
 import { ForgotPasswordDto } from './dto/forgot-password.dto';
 import { ResetPasswordDto } from './dto/reset-password.dto';
+import { ResendEmailVerificationDto } from './dto/resend-email-veridication.dto';
 import { CookieAuthGuard } from './guards/cookie-auth.guard';
 import { CookieService } from '../../shared/services/cookie.service';
 import type { ApiResponse, AuthRequest } from '../../shared/types';
@@ -137,6 +138,11 @@ export class AuthController {
     @Get('verify-email/:token')
     async verifyEmail(@Param('token') token: string): Promise<ApiResponse> {
         return this.authService.verifyEmail(token);
+    }
+
+    @Post('resend-email-verification')
+    async resendEmailVerification(@Body() resendEmailVerificationDto: ResendEmailVerificationDto): Promise<ApiResponse> {
+        return this.authService.resendEmailVerification(resendEmailVerificationDto);
     }
 
     @Post('refresh-token')

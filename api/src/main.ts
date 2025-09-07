@@ -20,7 +20,9 @@ async function bootstrap() {
   });
 
   app.enableCors({
-    origin: configService.get<string>('app.corsOrigin') || '*',
+    origin: configService.get<string>('app.frontendUrl') || '*',
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
     credentials: true,
   });
   app.use(cookieParser());

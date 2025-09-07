@@ -50,7 +50,7 @@ export class UsersService {
     return this.userModel.findOne({
       resetPasswordToken: token,
       resetPasswordExpiresAt: { $gt: Date.now() }
-    }).exec();
+    }).select('+password').exec();
   }
 
   async update(id: string, updateUserDto: UpdateUserDto): Promise<UserDocument> {
@@ -108,11 +108,13 @@ export class UsersService {
 
   async resetPassword(token: string, newPassword: string): Promise<UserDocument> {
     const user = await this.findByPasswordResetToken(token);
+
     if (!user) {
       throw new NotFoundException('Invalid or expired reset token');
     }
 
-    user.password = await this.userUtilsService.hashPassword(newPassword);
+    // Set the new password directly - let the pre-save middleware handle hashing
+    user.password = newPassword;
     user.resetPasswordToken = undefined;
     user.resetPasswordExpiresAt = undefined;
     await user.save();

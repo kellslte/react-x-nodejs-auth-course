@@ -345,7 +345,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ## 📞 Support
 
 If you have any questions or need help, please:
-1. Check the [Issues](https://github.com/your-repo/issues) page
+1. Check the [Issues](https://github.com/react-x-nodejs-auth-course/issues) page
 2. Create a new issue if your problem isn't already addressed
 3. Contact the maintainer
 

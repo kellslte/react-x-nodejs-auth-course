@@ -1,4 +1,4 @@
-import { Injectable, UnauthorizedException, ConflictException, NotFoundException } from '@nestjs/common';
+import { Injectable, UnauthorizedException, ConflictException, NotFoundException, BadRequestException } from '@nestjs/common';
 import { UsersService } from '../users/users.service';
 import { JwtService } from '../../shared/services/jwt.service';
 import { MailService } from '../../shared/services/mail/mail.service';
@@ -9,6 +9,7 @@ import { ForgotPasswordDto } from './dto/forgot-password.dto';
 import { ResetPasswordDto } from './dto/reset-password.dto';
 import { ApiResponse } from '../../shared/types';
 import { ConfigService } from '@nestjs/config';
+import { ResendEmailVerificationDto } from './dto/resend-email-veridication.dto';
 
 @Injectable()
 export class AuthService {
@@ -112,17 +113,13 @@ export class AuthService {
         user.resetPasswordExpiresAt = this.userUtilsService.getTokenExpirationTime(1);
         await user.save();
 
-        console.log(resetToken, 'The reset token');
-        console.log(user.email, 'The user email');
-        console.log(this.configService.getOrThrow<string>('app.frontendUrl'), 'The frontend url');
-
         // In a real application, you would send this token via email
         await this.mailService.sendPasswordResetEmail({
             email: user.email,
             token: resetToken,
             baseUrl: this.configService.getOrThrow<string>('app.frontendUrl'),
         });
-        
+
         return {
             success: true,
             message: 'Password reset link has been sent to your email',
@@ -195,5 +192,35 @@ export class AuthService {
         } catch (error) {
             throw new UnauthorizedException('Invalid refresh token');
         }
+    }
+
+    async resendEmailVerification(resendEmailVerificationDto: ResendEmailVerificationDto): Promise<ApiResponse> {
+        const user = await this.usersService.findByEmail(resendEmailVerificationDto.email);
+
+        if (!user) {
+            throw new NotFoundException('User not found');
+        }
+
+        if (user.isVerified) {
+            throw new BadRequestException('User already verified');
+        }
+
+        const emailVerificationToken = this.userUtilsService.generateVerificationToken();
+        user.verificationToken = emailVerificationToken;
+        user.verificationTokenExpiresAt = this.userUtilsService.getTokenExpirationTime(1);
+        await user.save();
+
+        await this.mailService.sendVerificationEmail({
+            email: user.email,
+            token: emailVerificationToken,
+            baseUrl: this.configService.getOrThrow<string>('app.frontendUrl'),
+        });
+
+
+        return {
+            success: true,
+            message: 'Email verification link has been sent to your email',
+            timestamp: new Date().toISOString(),
+        };
     }
 }
