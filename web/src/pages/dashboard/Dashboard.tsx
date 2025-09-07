@@ -1,10 +1,13 @@
-import { useAuth } from '@/lib/hooks/useAuth'
+import { useAuthStatus } from '@/lib/hooks/useAuthActions'
+import { useAuthStore } from '@/store/authStore'
 import { motion } from 'framer-motion'
+import ApiCallMonitor from '@/components/debug/ApiCallMonitor'
 
 import { useNavigate } from 'react-router';
 
 const Dashboard = () => {
-    const { user, signOut } = useAuth();
+    const { user } = useAuthStatus();
+    const { signOut } = useAuthStore();
     const navigate = useNavigate();
 
 
@@ -90,6 +93,9 @@ const Dashboard = () => {
                     Sign Out
                 </motion.button>
             </motion.div>
+
+            {/* Debug API Call Monitor */}
+            <ApiCallMonitor />
         </motion.div>
     )
 }

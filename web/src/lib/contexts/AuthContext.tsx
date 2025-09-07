@@ -34,7 +34,12 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
     // Check authentication only when needed
     useEffect(() => {
-        if (!needsAuthCheck || isCheckingAuth) return;
+        if (!needsAuthCheck || isCheckingAuth) {
+            if (!needsAuthCheck) {
+                setIsInitialized(true);
+            }
+            return;
+        }
 
         // Only check if not authenticated and enough time has passed
         if (!isAuthenticated && shouldCheckAuth()) {
