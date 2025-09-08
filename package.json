@@ -9,14 +9,17 @@
   "packageManager": "yarn@1.22.22",
   "scripts": {
     "build": "yarn workspaces run build",
+    "build:prod": "yarn workspace web build && yarn workspace api build",
     "start:dev": "yarn workspaces run start:dev",
-    "start:prod": "yarn workspaces run start:prod",
+    "start:prod": "NODE_ENV=production yarn run build:prod && yarn run api:prod",
     "api:dev": "yarn workspace api start:dev",
     "api:prod": "yarn workspace api start:prod",
     "web:dev": "yarn workspace web dev",
-    "web:prod": "yarn workspace web start",
+    "web:build": "yarn workspace web build",
+    "web:preview": "yarn workspace web preview",
     "clean": "yarn workspaces run clean && rm -rf node_modules",
-    "install:all": "yarn install"
+    "install:all": "yarn install",
+    "deploy": "yarn run build:prod && yarn run api:prod"
   },
   "devDependencies": {
     "typescript": "^5.9.2"

@@ -1,7 +1,7 @@
 import React from 'react';
-import { Link, useNavigate } from 'react-router';
+import { useNavigate } from 'react-router';
 import { motion } from 'framer-motion';
-import { Home, ArrowLeft, Search, RefreshCw, Zap, Rocket, Compass } from 'lucide-react';
+import { Home, ArrowLeft, Search, Zap, Rocket, Compass } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 interface NotFoundVariantProps {
@@ -17,7 +17,6 @@ const NotFoundVariants: React.FC<NotFoundVariantProps> = ({
 
   const handleGoBack = () => navigate(-1);
   const handleGoHome = () => navigate('/');
-  const handleRefresh = () => window.location.reload();
 
   const variants = {
     minimal: {

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link, useNavigate } from 'react-router';
+import {  useNavigate } from 'react-router';
 import { motion } from 'framer-motion';
 import { Home, ArrowLeft, RefreshCw } from 'lucide-react';
 import { cn } from '@/lib/utils';

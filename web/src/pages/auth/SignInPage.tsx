@@ -1,4 +1,3 @@
-import React from 'react'
 import { motion } from 'framer-motion'
 import SignInForm from '../../components/forms/SignInForm'
 import type { SignInFormData } from '../../components/forms/SignInForm'
@@ -7,7 +6,7 @@ import { useAuthActions } from '../../lib/hooks/useAuthActions'
 import { toast } from 'sonner'
 
 const SignInPage = () => {
-  const { signIn, isLoading, error } = useAuthActions()
+  const { signIn, isLoading } = useAuthActions()
   const navigate = useNavigate()
 
   const handleSubmit = async (data: SignInFormData) => {

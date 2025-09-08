@@ -3,16 +3,13 @@ import { Navigate } from 'react-router'
 import { apiService } from '@/lib/api'
 import { toast } from 'sonner'
 import { useAuthStatus } from '@/lib/hooks/useAuthActions'
-import { useAuthContext } from '@/lib/contexts/AuthContext'
-import { LoadingSpinnerPresets } from './LoadingSpinner'
 
 type Props = {
     children: React.ReactNode
 }
 
 const ProtectedRoutes = ({ children }: Props) => {
-    const { isAuthenticated, isCheckingAuth, user, isVerified } = useAuthStatus()
-    const { isInitialized } = useAuthContext()
+    const { isAuthenticated, user, isVerified } = useAuthStatus()
     const [hasSentVerification, setHasSentVerification] = useState(false)
 
     // Show loading while checking authentication or if not initialized

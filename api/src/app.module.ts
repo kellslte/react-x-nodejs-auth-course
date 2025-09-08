@@ -9,6 +9,8 @@ import { appConfig, databaseConfig, emailConfig, jwtConfig, cookieConfig } from 
 import { MailModule } from './shared/services/mail/mail.module';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ConfigService } from '@nestjs/config';
+import {ServeStaticModule}  from '@nestjs/serve-static';
+import { join } from 'path';
 
 @Module({
   imports: [
@@ -25,7 +27,11 @@ import { ConfigService } from '@nestjs/config';
     MailModule,
     DatabaseModule,
     UsersModule,
-    AuthModule
+    AuthModule,
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, '..', '..', 'web', 'dist'),
+      serveRoot: '/',
+    })
   ],
   controllers: [AppController],
   providers: [AppService],
