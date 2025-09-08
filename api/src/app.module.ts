@@ -9,7 +9,7 @@ import { appConfig, databaseConfig, emailConfig, jwtConfig, cookieConfig } from 
 import { MailModule } from './shared/services/mail/mail.module';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ConfigService } from '@nestjs/config';
-import {ServeStaticModule}  from '@nestjs/serve-static';
+import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
 
 @Module({
@@ -31,6 +31,20 @@ import { join } from 'path';
     ServeStaticModule.forRoot({
       rootPath: join(__dirname, '..', '..', 'web', 'dist'),
       serveRoot: '/',
+      exclude: ['/api/*path', '/.well-known/*path'],
+      serveStaticOptions: {
+        index: false,
+        setHeaders: (res, path) => {
+          // Set different cache headers for different file types
+          if (path.endsWith('.html')) {
+            res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+          } else if (path.endsWith('.js') || path.endsWith('.css')) {
+            res.setHeader('Cache-Control', 'public, max-age=31536000, immutable');
+          } else if (path.match(/\.(png|jpg|jpeg|gif|svg|ico|woff|woff2|ttf|eot)$/)) {
+            res.setHeader('Cache-Control', 'public, max-age=31536000, immutable');
+          }
+        },
+      },
     })
   ],
   controllers: [AppController],

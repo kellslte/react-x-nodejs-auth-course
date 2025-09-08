@@ -15,8 +15,32 @@ export class UsersService {
   ) { }
 
   async create(createUserDto: CreateUserDto): Promise<UserDocument> {
-    const user = new this.userModel(createUserDto);
-    return await user.save();
+    try {
+      // Check if user already exists by email
+      const existingUser = await this.findByEmail(createUserDto.email);
+      if (existingUser) {
+        throw new ConflictException('Email already exists');
+      }
+
+      const user = new this.userModel(createUserDto);
+      return await user.save();
+    } catch (error) {
+      if (error.code === 11000) {
+        // Handle duplicate key error
+        console.error('Duplicate key error details:', {
+          code: error.code,
+          keyPattern: error.keyPattern,
+          keyValue: error.keyValue,
+          message: error.message
+        });
+
+        if (error.keyPattern?.email) {
+          throw new ConflictException('Email already exists');
+        }
+        throw new ConflictException('User with this information already exists');
+      }
+      throw error;
+    }
   }
 
   async findAll(): Promise<User[]> {
